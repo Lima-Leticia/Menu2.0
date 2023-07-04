@@ -5,7 +5,7 @@ import Categories from "./Categories";
 import FoodModalForm from "../components/FoodModalForm";
 import items from "../json/data";
 import logo from "../logo.jpg";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import './index.css'
 
 
 // const allCategories = ["tudo", ...new Set(items.map((item) => item.category))];
