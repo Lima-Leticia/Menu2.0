@@ -1,34 +1,28 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Menu from "./Menu";
-import Categories from "./Categories";
+import Menu from "../app/Menu";
+import Categories from "../app/Categories";
 import FoodModalForm from "../components/FoodModalForm";
-import items from "../json/data";
-import logo from "../logo.jpg";
-import './index.css'
-
-
-// const allCategories = ["tudo", ...new Set(items.map((item) => item.category))];
-
+import data from "../json/data"
+import logo from '../logo.jpg';
+import './index.css';
 const Home = () => {
   
-  const [menuItems, setMenuItems] = useState(items);
+  const [menuItems, setMenuItems] = useState(data.menu);
   const [activeCategory, setActiveCategory] = useState("");
   const [categories, setCategories] = useState([]);
 
-  useEffect(
-    () => {
-      const loadData = async () => {
-        const response = await fetch('http://localhost:3001/menu');
-        const data = await response.json();
-
-        setCategories(data);
-
-        console.log(categories);
-      }
-
-      loadData();
-    }, []);
+  useEffect(() => {
+    const loadData = async () => {
+      const response = await fetch('http://localhost:3001/menu');
+      const data = await response.json();
+  
+      setCategories(data);
+    };
+  
+    loadData();
+  }, []);
+  
 
   const filterItems = (category) => {
     setActiveCategory(category);
@@ -47,16 +41,18 @@ const Home = () => {
           <h2>Menu</h2>
           <div className="underline"></div>
         </div>
-        {/* <Categories
+        <Categories
           categories={categories}
           activeCategory={activeCategory}
           filterItems={filterItems}
-        /> */}
-        {/* <Menu items={menuItems} /> */}
+        />
+         <Menu items={menuItems} />
       </section>
+     
       <div>
         {
           categories.map( (category, index) => {
+            
             return(
               <div key={index}>{category.title}</div>
             );
