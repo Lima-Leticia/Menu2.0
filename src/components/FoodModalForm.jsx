@@ -4,55 +4,64 @@ import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import  { create }  from '../app/api';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+
 function FoodModalForm() {
   const [show, setShow] = useState(false);
   const [food, setFood] = useState({
     nameFood: '',
     valueFood: '',
-    imgFood:'',
+    imgFood: '',
     descFood: '',
-    categoryFood: ''
-
+    categoryFood: '',
   });
+  const [saved, setSaved] = useState(false); // Novo estado para indicar se a comida foi salva
 
+  const handleClose = () => {
+    setShow(false);
+    setSaved(false); // Reinicia o estado ao fechar o modal
+  };
 
-  const handleClose = () => setShow(false);
-
-  function handleShow() {
+  const handleShow = () => {
     setShow(true);
-  }
+    setSaved(false); // Reinicia o estado ao abrir o modal
+  };
 
-  function handleTypedChar(event) {
+  const handleTypedChar = (event) => {
     const { name, value } = event.target;
-
     setFood({
       ...food,
       [name]: value,
     });
   };
-  
+
+  const handleSave = async () => {
+    try {
+      const savedFood = await create(food);
+      onAddFood(savedFood); // Adicionar o novo item à lista de comidas
+      handleClose();
+    } catch (error) {
+      console.error('Erro ao salvar a comida:', error);
+    }
+  };
+
   return (
     <>
-    <p className='text-right'>
-      <Button variant='secondary' onClick={handleShow}>
-        +
-      </Button>
-    </p>
-    
-    <Modal
-      show={show}
-      onHide={handleClose}
-      backdrop='static'
-      keyboard={false}
-    >
+      <p className='text-right'>
+        <Button variant='secondary' onClick={handleShow}>
+          +
+        </Button>
+      </p>
+
+      <Modal show={show} onHide={handleClose} backdrop='static' keyboard={false}>
         <Modal.Header closeButton>
           <Modal.Title>Nova Comida</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group className='mb-3' controlId='formBasicFood'>
+          <Form.Group className='mb-3' controlId='formBasicFood'>
               <Form.Label>Nome</Form.Label>
               <Form.Control
                 type='text'
@@ -104,13 +113,18 @@ function FoodModalForm() {
                 onChange={handleTypedChar}
               />
             </Form.Group>
+            
+
+              
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant='secondary' onClick={handleClose}>
             Fechar
           </Button>
-          <Button variant='primary'>Salvar</Button>
+          <Button variant='primary' onClick={handleSave}>
+            Salvar
+          </Button>
         </Modal.Footer>
       </Modal>
     </>
