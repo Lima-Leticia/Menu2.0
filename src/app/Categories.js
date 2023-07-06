@@ -1,22 +1,19 @@
 import React from "react";
 
 const Categories = ({ categories, filterItems, activeCategory }) => {
+  const allCategories = ["Tudo", "Lanches", "Sorvetes", "Pizzas", "Bebidas"];
+
   return (
     <div className="btn-container">
-      {categories.map((category, index) => {
-        return (
-          <button
-            type="button"
-            className={`${
-              activeCategory === category ? "filter-btn active" : "filter-btn"
-            }`}
-            key={index}
-            onClick={() => filterItems(category)}
-          >
-            {category}
-          </button>
-        );
-      })}
+      {allCategories.map((category) => (
+        <button
+          key={category}
+          className={`filter-btn ${activeCategory === category ? "active" : ""}`}
+          onClick={() => filterItems(category)}
+        >
+          {category}
+        </button>
+      ))}
     </div>
   );
 };
