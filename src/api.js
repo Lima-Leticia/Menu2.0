@@ -1,10 +1,10 @@
 export async function create(food) {
   try {
-    const res = await fetch(`${menu}/foods`, {
+    const res = await fetch('http://localhost:3001/menu', {
       method: 'POST',
       body: JSON.stringify(food),
       headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
+        'Content-Type': 'application/json',
       },
     });
 
