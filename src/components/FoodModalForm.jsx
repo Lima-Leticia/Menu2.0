@@ -1,14 +1,13 @@
-'use client';
-
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
-import  { create }  from '../api';
+import Alert from 'react-bootstrap/Alert';
+import { create } from '../api';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-function FoodModalForm() {
+function FoodModalForm({ onAddFood }) {
   const [show, setShow] = useState(false);
   const [food, setFood] = useState({
     nameFood: '',
@@ -17,34 +16,44 @@ function FoodModalForm() {
     descFood: '',
     categoryFood: '',
   });
-  const [saved, setSaved] = useState(false); // Novo estado para indicar se a comida foi salva
 
-  const handleClose = () => {
-    setShow(false);
-    setSaved(false); // Reinicia o estado ao fechar o modal
-  };
-
-  const handleShow = () => {
-    setShow(true);
-    setSaved(false); // Reinicia o estado ao abrir o modal
-  };
-
-  const handleTypedChar = (event) => {
+  const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setFood({
-      ...food,
+    setFood((prevFood) => ({
+      ...prevFood,
       [name]: value,
-    });
+    }));
   };
 
   const handleSave = async () => {
     try {
+      const regex = /^\d+\.\d{2}$/;
+      if (!regex.test(food.valueFood)) {
+        alert('Insira um preço válido (ex: 10.00)');
+        return;
+      }
+
       const savedFood = await create(food);
-      onAddFood(savedFood); // Adicionar o novo item à lista de comidas
+      onAddFood(savedFood);
       handleClose();
     } catch (error) {
       console.error('Erro ao salvar a comida:', error);
     }
+  };
+
+  const handleClose = () => {
+    setShow(false);
+    setFood({
+      nameFood: '',
+      valueFood: '',
+      imgFood: '',
+      descFood: '',
+      categoryFood: '',
+    });
+  };
+
+  const handleShow = () => {
+    setShow(true);
   };
 
   return (
@@ -61,14 +70,14 @@ function FoodModalForm() {
         </Modal.Header>
         <Modal.Body>
           <Form>
-          <Form.Group className='mb-3' controlId='formBasicFood'>
+            <Form.Group className='mb-3' controlId='formBasicFood'>
               <Form.Label>Nome</Form.Label>
               <Form.Control
                 type='text'
                 placeholder='Informe o nome da comida'
                 name='nameFood'
                 value={food.nameFood}
-                onChange={handleTypedChar}
+                onChange={handleInputChange}
               />
             </Form.Group>
             <Form.Group className='mb-3' controlId='formBasicFood'>
@@ -78,10 +87,14 @@ function FoodModalForm() {
                 placeholder='Preço da comida'
                 name='valueFood'
                 value={food.valueFood}
-                onChange={handleTypedChar}
-                pattern="\d+(\.\d{2})?"
-                title="Insira apenas nmeros com duas casas decimais separados por ponto."
+                onChange={handleInputChange}
+                isInvalid={!!food.valueFood && !/^\d+\.\d{2}$/.test(food.valueFood)}
               />
+              {!!food.valueFood && !/^\d+\.\d{2}$/.test(food.valueFood) && (
+                <Form.Control.Feedback type='invalid'>
+                  Insira um preço válido (ex: 10.00)
+                </Form.Control.Feedback>
+              )}
             </Form.Group>
             <Form.Group className='mb-3' controlId='formBasicFood'>
               <Form.Label>Imagem</Form.Label>
@@ -90,7 +103,7 @@ function FoodModalForm() {
                 placeholder='Imagem'
                 name='imgFood'
                 value={food.imgFood}
-                onChange={handleTypedChar}
+                onChange={handleInputChange}
               />
             </Form.Group>
             <Form.Group className='mb-3' controlId='formBasicFood'>
@@ -100,7 +113,7 @@ function FoodModalForm() {
                 placeholder='Descrição'
                 name='descFood'
                 value={food.descFood}
-                onChange={handleTypedChar}
+                onChange={handleInputChange}
               />
             </Form.Group>
             <Form.Group className='mb-3' controlId='formBasicFood'>
@@ -110,12 +123,9 @@ function FoodModalForm() {
                 placeholder='Categoria'
                 name='categoryFood'
                 value={food.categoryFood}
-                onChange={handleTypedChar}
+                onChange={handleInputChange}
               />
             </Form.Group>
-            
-
-              
           </Form>
         </Modal.Body>
         <Modal.Footer>
