@@ -4,8 +4,8 @@ import Menu from "../app/Menu";
 import Categories from "../app/Categories";
 import FoodModalForm from "../components/FoodModalForm";
 import data from "../json/data.json";
-import logo from './logo.jpg';
 import './index.css';
+
 
 const Home = () => {
   const [menuItems, setMenuItems] = useState(data.menu);
@@ -35,7 +35,6 @@ const Home = () => {
     setMenuItems(newItems);
   };
   
-  
 
   const addFood = (food) => {
     setMenuItems((prevMenuItems) => [...prevMenuItems, food]);
@@ -46,7 +45,6 @@ const Home = () => {
     <main>
       <section className="menu section">
         <div className="title">
-          <img src={logo} alt="logo" className="logo" />
           <h2>Menu</h2>
           <div className="underline"></div>
         </div>
@@ -65,7 +63,7 @@ const Home = () => {
       </div>
       <div className="container mx-auto lg:max-w-screen-lg">
       <FoodModalForm show={modalOpen} onAddFood={addFood} /> 
-      <button onClick={() => setModalOpen(true)}>Adicionar Comida</button>
+      
       </div>
     </main>
   );
